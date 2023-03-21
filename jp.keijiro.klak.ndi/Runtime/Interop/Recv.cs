@@ -54,6 +54,27 @@ public class Recv : SafeHandleZeroOrMinusOneIsInvalid
     public bool SetTally(in Tally tally)
       => _SetTally(this, tally);
 
+    public bool PtzIsSupported()
+				=> _PtzIsSupported(this);
+
+    public bool PtzZoom(float zoom)
+				=> _PtzZoom(this, zoom);
+
+    public bool PtzZoomSpeed(float zoom_speed)
+				=> _PtzZoomSpeed(this, zoom_speed);
+
+    public bool PtzPanTilt(float pan, float tilt)
+				=> _PtzPanTilt(this, pan, tilt);
+
+    public bool PtzPanTiltSpeed(float pan_speed, float tilt_speed)
+				=> _PtzPanTiltSpeed(this, pan_speed, tilt_speed);
+
+		public bool PtzStorePreset(int preset)
+				=> _PtzStorePreset(this, preset);
+
+		public bool PtzRecallPreset(int preset, float speed)
+				=> _PtzRecallPreset(this, preset, speed);
+
     #endregion
 
     #region Unmanaged interface
@@ -87,7 +108,35 @@ public class Recv : SafeHandleZeroOrMinusOneIsInvalid
     [return: MarshalAs(UnmanagedType.U1)]
     static extern bool _SetTally(Recv recv, in Tally tally);
 
-    #endregion
+		[DllImport(Config.DllName, EntryPoint = "NDIlib_recv_ptz_is_supported")]
+    [return: MarshalAs(UnmanagedType.U1)]
+    static extern bool _PtzIsSupported(Recv recv);
+
+		[DllImport(Config.DllName, EntryPoint = "NDIlib_recv_ptz_zoom")]
+    [return: MarshalAs(UnmanagedType.U1)]
+    static extern bool _PtzZoom(Recv recv, float zoom);
+
+		[DllImport(Config.DllName, EntryPoint = "NDIlib_recv_ptz_zoom_speed")]
+    [return: MarshalAs(UnmanagedType.U1)]
+    static extern bool _PtzZoomSpeed(Recv recv, float zoom_speed);
+
+		[DllImport(Config.DllName, EntryPoint = "NDIlib_recv_ptz_pan_tilt")]
+    [return: MarshalAs(UnmanagedType.U1)]
+    static extern bool _PtzPanTilt(Recv recv, float pan, float tilt);
+
+		[DllImport(Config.DllName, EntryPoint = "NDIlib_recv_ptz_pan_tilt_speed")]
+    [return: MarshalAs(UnmanagedType.U1)]
+    static extern bool _PtzPanTiltSpeed(Recv recv, float pan_speed, float tilt_speed);
+
+		[DllImport(Config.DllName, EntryPoint = "NDIlib_recv_ptz_store_preset")]
+    [return: MarshalAs(UnmanagedType.U1)]
+		static extern bool _PtzStorePreset(Recv recv, int preset);
+
+		[DllImport(Config.DllName, EntryPoint = "NDIlib_recv_ptz_recall_preset")]
+    [return: MarshalAs(UnmanagedType.U1)]
+		static extern bool _PtzRecallPreset(Recv recv, int preset, float speed);
+
+#endregion
 }
 
 } // namespace Klak.Ndi.Interop

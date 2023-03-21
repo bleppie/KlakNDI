@@ -14,11 +14,12 @@ public sealed partial class NdiReceiver : MonoBehaviour
     FormatConverter _converter;
     MaterialPropertyBlock _override;
 
-    void PrepareReceiverObjects()
+    bool PrepareReceiverObjects()
     {
         if (_recv == null) _recv = RecvHelper.TryCreateRecv(ndiName);
         if (_converter == null) _converter = new FormatConverter(_resources);
         if (_override == null) _override = new MaterialPropertyBlock();
+				return _recv != null;
     }
 
     void ReleaseReceiverObjects()
@@ -38,8 +39,7 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
     RenderTexture TryReceiveFrame()
     {
-        PrepareReceiverObjects();
-        if (_recv == null) return null;
+        if (! PrepareReceiverObjects()) return null;
 
         // Video frame capturing
         var frameOrNull = RecvHelper.TryCaptureVideoFrame(_recv);
@@ -71,6 +71,28 @@ public sealed partial class NdiReceiver : MonoBehaviour
     #endregion
 
     #region MonoBehaviour implementation
+
+		public bool IsPtzSupported()
+				=> PrepareReceiverObjects() && _recv.PtzIsSupported();
+
+		public bool SetZoom(float zoom)
+				=> PrepareReceiverObjects() && _recv.PtzZoom(zoom);
+
+		public bool SetZoomSpeed(float zoom_speed)
+				=> PrepareReceiverObjects() && _recv.PtzZoomSpeed(zoom_speed);
+
+		public bool SetPanTilt(float pan, float tilt)
+				=> PrepareReceiverObjects() && _recv.PtzPanTilt(pan, tilt);
+
+		public bool SetPanTiltSpeed(float pan_speed, float tilt_speed)
+				=> PrepareReceiverObjects() && _recv.PtzPanTiltSpeed(pan_speed, tilt_speed);
+
+		public bool StorePtzPreset(int preset)
+				=> PrepareReceiverObjects() && _recv.PtzStorePreset(preset);
+
+		public bool RecallPtzPreset(int preset, float speed)
+				=> PrepareReceiverObjects() && _recv.PtzRecallPreset(preset, speed);
+
 
     void OnDisable() => ReleaseReceiverObjects();
 
